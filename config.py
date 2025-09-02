@@ -1,5 +1,10 @@
+import json
+import os
+
 DEBUG = False
 RANDOM_START = True
+DQN_HIDDEN_LAYERS = 2
+DQN_NODES_PER_LAYER = 32
 
 # Tabular Q-learning parameters
 TAB_ALPHA = 0.1
@@ -17,3 +22,38 @@ DQN_EPSILON_DECAY = 0.995
 DQN_EPISODES = 500
 DQN_TARGET_UPDATE_FREQ = 10
 DQN_GRAD_UPDATE_FREQ = 1
+
+CONFIG_FILE = "config.json"
+
+def save_config(filename=None):
+    filename = filename or CONFIG_FILE
+    config = {k: globals()[k] for k in globals()
+              if not k.startswith("__") and k.isupper()}
+    with open(filename, "w") as f:
+        json.dump(config, f, indent=4)
+    print(f"✅ Configuration saved to {filename}")
+
+def load_config(filename=None):
+    global DEBUG, RANDOM_START
+    global DQN_HIDDEN_LAYERS, DQN_NODES_PER_LAYER
+    global TAB_ALPHA, TAB_GAMMA, TAB_EPSILON, TAB_MIN_EPSILON, TAB_EPSILON_DECAY, TAB_EPISODES
+    global DQN_BATCH_SIZE, DQN_GAMMA, DQN_EPSILON, DQN_EPSILON_DECAY, DQN_EPISODES, DQN_TARGET_UPDATE_FREQ, DQN_GRAD_UPDATE_FREQ
+
+    filename = filename or CONFIG_FILE
+    try:
+        with open(filename, "r") as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        print(f"⚠️ Config file {filename} not found")
+        return
+
+    for k, v in config.items():
+        if k in globals():
+            globals()[k] = v
+
+    print(f"✅ Configuration loaded from {filename}")
+
+if os.path.exists(CONFIG_FILE):
+    load_config(CONFIG_FILE)
+else:
+    print("⚠️ No config file found, using default parameters")

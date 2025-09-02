@@ -6,3 +6,4 @@ venv/
 .env
 plot_dqn.png
 plot_tabular.png
+config.json

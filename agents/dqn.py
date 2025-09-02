@@ -3,19 +3,31 @@ from collections import deque
 import numpy as np
 import torch.optim as optim
 from tqdm import trange
-from config import *
+from config import DQN_HIDDEN_LAYERS, DQN_NODES_PER_LAYER
 
 class DQN(nn.Module):
     def __init__(self, state_size, action_size):
         super().__init__()
         self.embedding = nn.Embedding(state_size, 16)
-        self.net = nn.Sequential(
-            nn.Linear(16, 32),
-            nn.ReLU(),
-            nn.Linear(32, 32),
-            nn.ReLU(),
-            nn.Linear(32, action_size)
-        )
+
+        layers = []
+        input_size = 16
+
+        for _ in range(DQN_HIDDEN_LAYERS):
+            layers.append(nn.Linear(input_size, DQN_NODES_PER_LAYER))
+            layers.append(nn.ReLU())
+            input_size = DQN_NODES_PER_LAYER
+
+        layers.append(nn.Linear(input_size, action_size))
+        self.net = nn.Sequential(*layers)
+
+        # self.net = nn.Sequential(
+        #     nn.Linear(16, 32),
+        #     nn.ReLU(),
+        #     nn.Linear(32, 32),
+        #     nn.ReLU(),
+        #     nn.Linear(32, action_size)
+        # )
 
     def forward(self, x):
         x = self.embedding(x)

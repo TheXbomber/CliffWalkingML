@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from tqdm import trange
-from config import *
+from config import DEBUG
 
 def train_tabular_q(env, episodes=1000, alpha=0.1, gamma=0.99, epsilon=1.0, epsilon_decay=0.995, min_epsilon=0.1):
     n_states = env.observation_space.n
