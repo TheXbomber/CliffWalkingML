@@ -1,4 +1,5 @@
 DEBUG = False
+RANDOM_START = True
 
 # Tabular Q-learning parameters
 TAB_ALPHA = 0.1

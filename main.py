@@ -2,9 +2,10 @@ import gymnasium as gym
 from config import *
 from agents.tabular import train_tabular_q
 from agents.dqn import train_dqn
+import sys
 from utils.plot import plot
 from utils.evaluation import evaluate_agent
-import sys
+from utils.wrappers import RandomStartWrapper
 
 # Set the device
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -13,6 +14,10 @@ print("Using device:", device)
 
 # Create the environment
 env = gym.make("CliffWalking-v1", render_mode="ansi")
+
+if RANDOM_START:
+    env = RandomStartWrapper(env)
+
 n_states = env.observation_space.n
 n_actions = env.action_space.n
 
