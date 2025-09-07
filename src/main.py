@@ -29,12 +29,15 @@ def configure_parameters():
         print(f"[15] Episodes = {config.DQN_EPISODES}")
         print(f"[16] Target update frequency = {config.DQN_TARGET_UPDATE_FREQ}")
         print(f"[17] Gradient update frequency = {config.DQN_GRAD_UPDATE_FREQ}")
+        print("--- EVALUATION ---")
+        print(f"[18] Episodes = {config.EVALUATION_EPISODES}")
+        print("\n⚙️ MANAGE CONFIG:")
         print("[100] 💾 Save Configuration")
-        print("[200] 📂 Load Configuration")
+        print("[200] 📂 Load Configuration\n")
         print("[0] 🔙 Go Back")
 
         try:
-            choice = int(input("SELECT A PARAMETER TO CHANGE OR SAVE/LOAD CONFIG: "))
+            choice = int(input("CHANGE A PARAMETER OR MANAGE CONFIG: "))
         except ValueError:
             continue
 
@@ -46,7 +49,7 @@ def configure_parameters():
             try:
                 if choice in [3, 4, 7, 12, 14]:  # float
                     value = float(value)
-                elif choice in [5, 6, 8, 9, 10, 11, 13, 15, 16, 17]:  # integer
+                elif choice in [5, 6, 8, 9, 10, 11, 13, 15, 16, 17, 18]:  # integer
                     value = int(value)
                 elif choice in [1, 2]:  # bool
                     value = value.lower() in ["true", "1", "yes", "y"]
@@ -95,6 +98,8 @@ def configure_parameters():
                 config.DQN_TARGET_UPDATE_FREQ = value
             case 17:
                 config.DQN_GRAD_UPDATE_FREQ = value
+            case 18:
+                config.EVALUATION_EPISODES = value
             case _:
                 print("⚠️ Invalid choice")
                 continue
@@ -140,7 +145,7 @@ while True:
                 while True:
                     print("🤖 SELECT AN AGENT:")
                     print("[1] 📊 Tabular Q-learning")
-                    print("[2] 🧮 DQN")
+                    print("[2] 🧮 DQN\n")
                     print("[0] 🔙 Go Back")
                     
                     try:
@@ -171,7 +176,7 @@ while True:
                 while True:
                     print("🤖 SELECT AN AGENT:")
                     print("[1] 📊 Tabular Q-learning")
-                    print("[2] 🧮 DQN")
+                    print("[2] 🧮 DQN\n")
                     print("[0] 🔙 Go Back")
 
                     try:
@@ -186,14 +191,14 @@ while True:
                     else:
                         if choice == 1:
                             try:  
-                                evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=1000)
+                                evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=config.EVALUATION_EPISODES)
                             except NameError:
                                 print("⚠️ You need to train tabular Q-learning before evaluating it!")
                                 break
                             break
                         elif choice == 2:
                             try:
-                                evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=1000)
+                                evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=config.EVALUATION_EPISODES)
                             except NameError:
                                 print("⚠️ You need to train DQN before evaluating it!")
                                 break
@@ -208,7 +213,7 @@ while True:
                 while True:
                     print("🤖 SELECT AN AGENT:")
                     print("[1] 📊 Tabular Q-learning")
-                    print("[2] 🧮 DQN")
+                    print("[2] 🧮 DQN\n")
                     print("[0] 🔙 Go Back")
 
                     try:
@@ -223,12 +228,12 @@ while True:
                     else:
                         if choice == 1:
                             Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env, config.TAB_EPISODES)
-                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=1000)
+                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=config.EVALUATION_EPISODES)
                             plot(rewards_tabular=rewards_tabular, epsilon_history_tabular=epsilon_history_tabular, td_errors=td_errors)
                             break
                         elif choice == 2:
                             policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env, config.DQN_EPISODES)
-                            evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=1000)
+                            evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=config.EVALUATION_EPISODES)
                             plot(rewards_dqn=rewards_dqn, epsilon_history_dqn=epsilon_history_dqn, losses=losses)
                             break
                         elif choice == 0:
