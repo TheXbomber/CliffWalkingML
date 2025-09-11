@@ -3,7 +3,7 @@ from collections import deque
 import numpy as np
 import torch.optim as optim
 from tqdm import trange
-from config import DQN_HIDDEN_LAYERS, DQN_NODES_PER_LAYER
+import config
 
 class DQN(nn.Module):
     def __init__(self, state_size, action_size):
@@ -13,10 +13,10 @@ class DQN(nn.Module):
         layers = []
         input_size = 16
 
-        for _ in range(DQN_HIDDEN_LAYERS):
-            layers.append(nn.Linear(input_size, DQN_NODES_PER_LAYER))
+        for _ in range(config.DQN_HIDDEN_LAYERS):
+            layers.append(nn.Linear(input_size, config.DQN_NODES_PER_LAYER))
             layers.append(nn.ReLU())
-            input_size = DQN_NODES_PER_LAYER
+            input_size = config.DQN_NODES_PER_LAYER
 
         layers.append(nn.Linear(input_size, action_size))
         self.net = nn.Sequential(*layers)
@@ -33,7 +33,16 @@ class DQN(nn.Module):
         x = self.embedding(x)
         return self.net(x)
 
-def train_dqn(device, env, episodes=1000, batch_size=64, gamma=0.99, epsilon=1.0, min_epsilon=0.1, epsilon_decay=0.995, target_update_freq=10, grad_update_freq=4):
+def train_dqn(device, env):
+    episodes=config.DQN_EPISODES
+    batch_size=config.DQN_BATCH_SIZE
+    gamma=config.DQN_GAMMA
+    epsilon=config.DQN_EPSILON
+    min_epsilon=config.DQN_MIN_EPSILON
+    epsilon_decay=config.DQN_EPSILON_DECAY
+    target_update_freq=config.DQN_TARGET_UPDATE_FREQ
+    grad_update_freq=config.DQN_GRAD_UPDATE_FREQ
+
     n_states = env.observation_space.n
     n_actions = env.action_space.n
     policy_net = DQN(n_states, n_actions).to(device)
@@ -43,12 +52,10 @@ def train_dqn(device, env, episodes=1000, batch_size=64, gamma=0.99, epsilon=1.0
 
     optimizer = optim.Adam(policy_net.parameters(), lr=1e-3)
     criterion = nn.MSELoss()
-    replay_buffer = deque(maxlen=10_000)
+    replay_buffer = deque(maxlen=1000)
     step_count = 0
 
-    rewards = []
-    epsilon_history = []
-    losses = []
+    rewards, epsilon_history, losses = [], [], []
 
     for ep in trange(episodes, desc="🏋️ Training DQN"):
         state, _ = env.reset()

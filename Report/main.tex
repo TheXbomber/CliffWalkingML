@@ -85,13 +85,13 @@
 \tableofcontents
 
 \section{Introduction}
-In this Machine Learning project we will focus on the subject of Reinforcement Learning applied to the environment of "Cliff Walking". The goal of the agent is to reach a specified location, by moving in the four directions without falling down the cliff. This problem represents a fundamental challenge in reinforcement learning, combining elements od exploration/exploitation tradeoff, temporal credit assignment and policy optimization. This environment provides an excellent testbed for comparing different reinforcement learning approaches, in particular tabular Q-learning and Deep Q-Networks (DQN).
+In this Machine Learning project we will focus on the subject of Reinforcement Learning applied to the "Cliff Walking" environment. The goal of the agent is to reach a specified location, by moving in the four directions without falling down the cliff. This problem represents a fundamental challenge in Reinforcement Learning, combining elements of exploration/exploitation tradeoff, temporal credit assignment and policy optimization. This environment provides an excellent testbed for comparing different Reinforcement Learning approaches, in particular tabular Q-learning and Deep Q-Networks (DQN).
 \vspace{0,5cm}\\
 Our implementation explores both classical tabular methods, suitable for discrete state spaces and modern deep learning approaches that can handle more complex scenarios. Trough extensive experimentation and hyperparameter tuning, we demonstrate how different choices and configurations impact learning performance and convergence behavior. 
 \section{Reinforcement Learning}
 Reinforcement Learning is a branch of machine learning focused on decision making trough interaction with the environment. Unlike supervised learning, where the correct outputs are given for training, in Reinforcement Learning the agent must discover the optimal behavior by trial and error, guided only by rewards. Formally, Reinforcement Learning is often modeled as a Markov Decision Process (MDP), defined by states, actions, transition probabilities and rewards. The agent's goal is to learn a policy, a mapping from states to actions, that maximizes the expected cumulative reward over time.
 \vspace{0,5cm}\\
-The core components of Reinforcement Learning are:
+The core components of a Markov Decision Process are:
 \begin{itemize}
     \item \textbf{Agent}: the learner or decision-maker that interacts with the environment. In our case this is the entity navigating the cliff walking grid.
     \item \textbf{Environment}: the external system that the agent interacts with. For cliff walking, this includes the grid world, cliff locations, and reward structure.
@@ -99,6 +99,7 @@ The core components of Reinforcement Learning are:
     \item \textbf{Action (A)}: the choices available to the agent at any given state.
     \item \textbf{Reward (R)}: the feedback signal from the environment indicating how good or bad the last action was. Rewards guide the learning process.
     \item \textbf{Policy ($\pi$)}: the agent's strategy for choosing actions given states. This can be deterministic (always choose the same action in a given state) or stochastic (choose actions according to a probability distribution).
+    \item $\delta(s'|s,a)$: the probability distribution over the transitions.
 \end{itemize}
 The Reinforcement Learning process follows a continuous loop:
 \begin{enumerate}
@@ -109,9 +110,9 @@ The Reinforcement Learning process follows a continuous loop:
     \item Update the policy based on the experience
     \item Repeat until learning converges or a stopping criterion is met
 \end{enumerate}
-One of the fundamental challenges in Reinforcement Learning is balancing \textbf{exploration} (trying new actions to discover potentially better strategies) with \textbf{exploitation} (using knows good actions to maximize rewards). This balancing is crucial because too much exploration can lead to the agent wasting time on suboptimal actions, on the other hand with too little exploration the agent may get stuck in a local optima and never discover the best strategy.
+One of the fundamental challenges in Reinforcement Learning is balancing \textbf{exploration} (trying new actions to discover potentially better strategies) with \textbf{exploitation} (using known good actions to maximize rewards). This balancing is crucial because too much exploration can lead to the agent wasting time on suboptimal actions, on the other hand with too little exploration the agent may get stuck in a local optimum and never discover the best strategy.
 \subsection{Q-Learning}
-Q-Learning is a model-free reinforcement learning algorithm that learns the quality of actions, telling the agent what actions to take under what circumstances. The "Q" stands for quality, representing the expected future reward for taking a specific action in a specific state.\\ The \textbf{Q-function} Q(s,a) represents the expected cumulative reward when taking action 'a' in state 's' and then following the optimal policy. The learning process involves iteratively updating these Q-values using Bellman equation:
+Q-Learning is a model-free Reinforcement Learning algorithm that learns the quality of actions, telling the agent what actions to take under what circumstances. The "Q" stands for quality, representing the expected future reward for taking a specific action in a specific state.\\ The \textbf{Q-function} Q(s,a) represents the expected cumulative reward when taking action 'a' in state 's' and then following the optimal policy. The learning process involves iteratively updating these Q-values using the Bellman equation:
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.5]{bellman.png}
@@ -125,16 +126,20 @@ Where:
 \end{itemize}
 \textbf{Tabular Q-Learning} maintains explicit Q-values for every (state, actions) pair in a lookup table. This approach works well for environments with small, discrete state and action spaces but becomes impractical as the state space grows.
 \vspace{0,5cm}\\
-\textbf{Deep Q-Networks (DQN)} use neural networks to approximate the Q-function, enabling the handling of large or continuous state spaces. Instead of storing individual Q-values, the network learns to map state to Q-values for all possible actions.
+\textbf{Deep Q-Networks (DQN)} use neural networks to approximate the Q-function, enabling the handling of large or continuous state spaces. Instead of storing individual Q-values, the network learns to map states to Q-values for all possible actions.
 \vspace{0,5cm}\\
 To balance exploration and exploitation, we implement an epsilon-greedy policy:
 \begin{itemize}
-    \item With probability \textbf{$\epsilon$ (epsilon)}: choose a random action (exploration)
-    \item With probability \textbf{(1-$\epsilon$)}: choose the action with the highest Q-value (exploitation)
+    \item With probability \textbf{$\varepsilon$ (epsilon)}: choose a random action (exploration)
+    \item With probability \textbf{(1-$\varepsilon$)}: choose the action with the highest Q-value (exploitation)
 \end{itemize}
 The epsilon value starts high (encouraging exploration) and gradually decreases (shifting toward exploitation) as learning progresses.
 \section{Environment}
 The Cliff Walking environment is part of the Toy Text environments which contains general information about the environment. It involves crossing a grid world from start to goal while avoiding falling off a cliff.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{cliff_walking.png}
+\end{figure}
 \subsection{Description}
 The game starts with the player at location [3, 0] of the 4x12 grid world with the goal located at [3, 11]. If the player reaches the goal the episode ends.
 \vspace{0,5cm}\\

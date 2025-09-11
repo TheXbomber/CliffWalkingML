@@ -7,30 +7,33 @@ from utils.plot import plot
 from utils.evaluation import evaluate_agent
 from utils.wrappers import RandomStartWrapper
 
-def configure_parameters():
+def configure_parameters(env):
     while True:
         print("\n⚙️ CURRENT PARAMETERS:")
         print(f"[1] Debug mode = {config.DEBUG}")
         print(f"[2] Random start = {config.RANDOM_START}")
+        print(f"[3] Slippery = {config.SLIPPERY}")
         print("--- TABULAR Q-LEARNING ---")
-        print(f"[3] Alpha = {config.TAB_ALPHA}")
-        print(f"[4] Gamma = {config.TAB_GAMMA}")
-        print(f"[5] Epsilon = {config.TAB_EPSILON}")
-        print(f"[6] Minimum epsilon = {config.TAB_MIN_EPSILON}")
-        print(f"[7] Epsilon decay = {config.TAB_EPSILON_DECAY}")
-        print(f"[8] Episodes = {config.TAB_EPISODES}")
+        print(f"[4] Alpha = {config.TAB_ALPHA}")
+        print(f"[5] Gamma = {config.TAB_GAMMA}")
+        print(f"[6] Epsilon = {config.TAB_EPSILON}")
+        print(f"[7] Minimum epsilon = {config.TAB_MIN_EPSILON}")
+        print(f"[8] Epsilon decay = {config.TAB_EPSILON_DECAY}")
+        print(f"[9] Episodes = {config.TAB_EPISODES}")
         print("--- DQN ---")
-        print(f"[9] Number of hidden layers = {config.DQN_HIDDEN_LAYERS}")
-        print(f"[10] Number of nodes per layer = {config.DQN_NODES_PER_LAYER}")
-        print(f"[11] Batch size = {config.DQN_BATCH_SIZE}")
-        print(f"[12] Gamma = {config.DQN_GAMMA}")
-        print(f"[13] Epsilon = {config.DQN_EPSILON}")
-        print(f"[14] Epsilon decay = {config.DQN_EPSILON_DECAY}")
-        print(f"[15] Episodes = {config.DQN_EPISODES}")
-        print(f"[16] Target update frequency = {config.DQN_TARGET_UPDATE_FREQ}")
-        print(f"[17] Gradient update frequency = {config.DQN_GRAD_UPDATE_FREQ}")
+        print(f"[10] Number of hidden layers = {config.DQN_HIDDEN_LAYERS}")
+        print(f"[11] Number of nodes per layer = {config.DQN_NODES_PER_LAYER}")
+        print(f"[12] Batch size = {config.DQN_BATCH_SIZE}")
+        print(f"[13] Gamma = {config.DQN_GAMMA}")
+        print(f"[14] Epsilon = {config.DQN_EPSILON}")
+        print(f"[15] Epsilon decay = {config.DQN_EPSILON_DECAY}")
+        print(f"[16] Minimum epsilon = {config.DQN_MIN_EPSILON}")
+        print(f"[17] Buffer size = {config.DQN_BUFFER_SIZE}")
+        print(f"[18] Episodes = {config.DQN_EPISODES}")
+        print(f"[19] Target update frequency = {config.DQN_TARGET_UPDATE_FREQ}")
+        print(f"[20] Gradient update frequency = {config.DQN_GRAD_UPDATE_FREQ}")
         print("--- EVALUATION ---")
-        print(f"[18] Episodes = {config.EVALUATION_EPISODES}")
+        print(f"[21] Episodes = {config.EVALUATION_EPISODES}")
         print("\n⚙️ MANAGE CONFIG:")
         print("[100] 💾 Save Configuration")
         print("[200] 📂 Load Configuration\n")
@@ -47,12 +50,18 @@ def configure_parameters():
         if choice not in [100, 200]:
             value = input("Enter new value: ")
             try:
-                if choice in [3, 4, 7, 12, 14]:  # float
+                if choice in [4, 5, 8, 13, 15, 16]:  # float
                     value = float(value)
-                elif choice in [5, 6, 8, 9, 10, 11, 13, 15, 16, 17, 18]:  # integer
+                elif choice in [6, 7, 9, 10, 11, 12, 14, 17, 18, 19, 20, 21]:  # integer
                     value = int(value)
-                elif choice in [1, 2]:  # bool
-                    value = value.lower() in ["true", "1", "yes", "y"]
+                elif choice in [1, 2, 3]:  # bool
+                    if value.lower() in ["true", "1", "yes", "y"]:
+                        value = True
+                    elif value.lower() in ["false", "0", "no", "n"]:
+                        value = False
+                    else:
+                        print("⚠️ Invalid boolean value! Use true/false, 1/0, yes/no, y/n.")
+                        continue
             except ValueError:
                 print("⚠️ Invalid value type!")
                 continue
@@ -68,43 +77,56 @@ def configure_parameters():
                 config.DEBUG = value
             case 2:
                 config.RANDOM_START = value
+                env.close()
+                env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
+                if config.RANDOM_START:
+                    env = RandomStartWrapper(env)
             case 3:
-                config.TAB_ALPHA = value
+                config.SLIPPERY = value
+                env.close()
+                env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
             case 4:
-                config.TAB_GAMMA = value
+                config.TAB_ALPHA = value
             case 5:
-                config.TAB_EPSILON = value
+                config.TAB_GAMMA = value
             case 6:
-                config.TAB_MIN_EPSILON = value
+                config.TAB_EPSILON = value
             case 7:
-                config.TAB_EPSILON_DECAY = value
+                config.TAB_MIN_EPSILON = value
             case 8:
-                config.TAB_EPISODES = value
+                config.TAB_EPSILON_DECAY = value
             case 9:
-                config.DQN_HIDDEN_LAYERS = value
+                config.TAB_EPISODES = value
             case 10:
-                config.DQN_NODES_PER_LAYER = value
+                config.DQN_HIDDEN_LAYERS = value
             case 11:
-                config.DQN_BATCH_SIZE = value
+                config.DQN_NODES_PER_LAYER = value
             case 12:
-                config.DQN_GAMMA = value
+                config.DQN_BATCH_SIZE = value
             case 13:
-                config.DQN_EPSILON = value
+                config.DQN_GAMMA = value
             case 14:
-                config.DQN_EPSILON_DECAY = value
+                config.DQN_EPSILON = value
             case 15:
-                config.DQN_EPISODES = value
+                config.DQN_MIN_EPSILON = value
             case 16:
-                config.DQN_TARGET_UPDATE_FREQ = value
+                config.DQN_EPSILON_DECAY = value
             case 17:
-                config.DQN_GRAD_UPDATE_FREQ = value
+                config.DQN_BUFFER_SIZE = value
             case 18:
+                config.DQN_EPISODES = value
+            case 19:
+                config.DQN_TARGET_UPDATE_FREQ = value
+            case 20:
+                config.DQN_GRAD_UPDATE_FREQ = value
+            case 21:
                 config.EVALUATION_EPISODES = value
             case _:
                 print("⚠️ Invalid choice")
                 continue
 
         print("✅ Parameter updated!")
+    return env
 
 
 
@@ -114,7 +136,7 @@ device = "cpu"
 print("Using device:", device)
 
 # Create the environment
-env = gym.make("CliffWalking-v1", render_mode="ansi")
+env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
 
 if config.RANDOM_START:
     env = RandomStartWrapper(env)
@@ -159,11 +181,11 @@ while True:
                         continue
                     else:
                         if choice == 1:
-                            Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env, config.TAB_EPISODES)
+                            Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env)
                             plot(rewards_tabular=rewards_tabular, epsilon_history_tabular=epsilon_history_tabular, td_errors=td_errors)
                             break
                         elif choice == 2:
-                            policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env, config.DQN_EPISODES)
+                            policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env)
                             plot(rewards_dqn=rewards_dqn, epsilon_history_dqn=epsilon_history_dqn, losses=losses)
                             break
                         elif choice == 0:
@@ -191,14 +213,14 @@ while True:
                     else:
                         if choice == 1:
                             try:  
-                                evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=config.EVALUATION_EPISODES)
+                                evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True)
                             except NameError:
                                 print("⚠️ You need to train tabular Q-learning before evaluating it!")
                                 break
                             break
                         elif choice == 2:
                             try:
-                                evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=config.EVALUATION_EPISODES)
+                                evaluate_agent(device, env, policy_net=policy_net, tabular=False)
                             except NameError:
                                 print("⚠️ You need to train DQN before evaluating it!")
                                 break
@@ -227,13 +249,13 @@ while True:
                         continue
                     else:
                         if choice == 1:
-                            Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env, config.TAB_EPISODES)
-                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True, episodes=config.EVALUATION_EPISODES)
+                            Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env)
+                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True)
                             plot(rewards_tabular=rewards_tabular, epsilon_history_tabular=epsilon_history_tabular, td_errors=td_errors)
                             break
                         elif choice == 2:
-                            policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env, config.DQN_EPISODES)
-                            evaluate_agent(device, env, policy_net=policy_net, tabular=False, episodes=config.EVALUATION_EPISODES)
+                            policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env)
+                            evaluate_agent(device, env, policy_net=policy_net, tabular=False)
                             plot(rewards_dqn=rewards_dqn, epsilon_history_dqn=epsilon_history_dqn, losses=losses)
                             break
                         elif choice == 0:
@@ -243,7 +265,7 @@ while True:
                             sys.exit()
                 
             case 4:
-                configure_parameters()
+                env = configure_parameters(env)
                 continue
 
             case 0:

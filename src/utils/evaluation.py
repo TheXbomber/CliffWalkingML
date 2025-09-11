@@ -3,9 +3,12 @@ from collections import deque
 import numpy as np
 import random
 import torch
-from config import DEBUG
+import config
 
-def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True, episodes=10, loop_check_steps=20, random_start=False):
+def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_start=False):
+    episodes=config.EVALUATION_EPISODES
+    loop_check_steps=20
+
     successes, falls, total_rewards, steps_list = 0, 0, [], []
 
     agent = "DQN" if not tabular else "Tabular Q-learning" 
@@ -15,17 +18,13 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True, episodes=
 
     for _ in trange(episodes, desc="🧪 Evaluating " + agent):
 
-        if random_start:
-            state = random.randint(0, env.observation_space.n - 2)
-            env.unwrapped.s = state
-        else:
-            state, _ = env.reset()
+        state, _ = env.reset()
 
         done, ep_reward, steps = False, 0, 0
         state_history = deque(maxlen=loop_check_steps)
 
         while not done:
-            if DEBUG:
+            if config.DEBUG:
                 print(env.render())
 
             # Select action
@@ -41,14 +40,14 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True, episodes=
             ep_reward += reward
             steps += 1
 
-            if DEBUG:
+            if config.DEBUG:
                 print(f"State: {state}, Action: {action}, Reward: {reward}, Next state: {next_state}\n---\n")
 
             # Loop detection
             state_history.append(next_state)
             if len(state_history) == loop_check_steps:
               unique_states = len(set(state_history))
-              if unique_states < loop_check_steps // 3:  # 1/3 of buffer are unique
+              if config.DEBUG and (unique_states < loop_check_steps // 3):  # 1/3 of buffer are unique
                   print("🛑 Loop detected! Ending episode early.")
                   break
 

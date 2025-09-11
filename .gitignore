@@ -7,3 +7,11 @@ venv/
 plot_dqn.png
 plot_tabular.png
 config.json
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.Identifier
