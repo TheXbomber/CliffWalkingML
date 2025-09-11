@@ -46,6 +46,10 @@ def train_dqn(device, env):
     n_states = env.observation_space.n
     n_actions = env.action_space.n
     policy_net = DQN(n_states, n_actions).to(device)
+
+    if config.DEBUG:
+        print("DQN architecture:\n", policy_net)
+        
     target_net = DQN(n_states, n_actions).to(device)
     target_net.load_state_dict(policy_net.state_dict())
     target_net.eval()

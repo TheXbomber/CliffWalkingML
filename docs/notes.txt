@@ -1,0 +1,2 @@
+- Adding random start increases average reward since the agent can start closer to the goal
+- Removing hidden layers seems to give worse rewards (to be confirmed)

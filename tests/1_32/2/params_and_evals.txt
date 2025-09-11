@@ -10,7 +10,7 @@
 [8] Epsilon decay = 0.995
 [9] Episodes = 500
 --- DQN ---
-[10] Number of hidden layers = 2
+[10] Number of hidden layers = 1
 [11] Number of nodes per layer = 32
 [12] Batch size = 64
 [13] Gamma = 0.99
@@ -28,12 +28,12 @@ TABULAR
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 1000/1000 (100.0%)
   Cliff Falls: 0
-  Avg Total Reward: -45.26
-  Avg Steps per Episode: 45.26
+  Avg Total Reward: -43.96
+  Avg Steps per Episode: 43.96
 
 DQN
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 1000/1000 (100.0%)
   Cliff Falls: 0
-  Avg Total Reward: -47.41
-  Avg Steps per Episode: 47.41
+  Avg Total Reward: -46.07
+  Avg Steps per Episode: 46.07

@@ -23,7 +23,7 @@ DQN_EPSILON_DECAY = 0.995
 DQN_BUFFER_SIZE = 1000
 DQN_EPISODES = 500
 DQN_TARGET_UPDATE_FREQ = 10
-DQN_GRAD_UPDATE_FREQ = 1
+DQN_GRAD_UPDATE_FREQ = 4
 DQN_HIDDEN_LAYERS = 2
 DQN_NODES_PER_LAYER = 32
 
@@ -56,8 +56,3 @@ def load_config(filename=None):
             globals()[k] = v
 
     print(f"✅ Configuration loaded from {filename}")
-
-if os.path.exists(CONFIG_FILE):
-    load_config(CONFIG_FILE)
-else:
-    print("⚠️ No config file found, using default parameters")

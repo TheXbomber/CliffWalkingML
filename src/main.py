@@ -3,6 +3,7 @@ import config
 from agents.tabular import train_tabular_q
 from agents.dqn import train_dqn
 import sys
+import os
 from utils.plot import plot
 from utils.evaluation import evaluate_agent
 from utils.wrappers import RandomStartWrapper
@@ -135,6 +136,11 @@ def configure_parameters(env):
 device = "cpu"
 print("Using device:", device)
 
+if os.path.exists(config.CONFIG_FILE):
+    config.load_config(config.CONFIG_FILE)
+else:
+    print("⚠️ No config file found, using default parameters")
+
 # Create the environment
 env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
 
@@ -250,13 +256,13 @@ while True:
                     else:
                         if choice == 1:
                             Q, rewards_tabular, epsilon_history_tabular, td_errors = train_tabular_q(env)
-                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True)
                             plot(rewards_tabular=rewards_tabular, epsilon_history_tabular=epsilon_history_tabular, td_errors=td_errors)
+                            evaluate_agent(device, env, policy_net=None, Q=Q, tabular=True)
                             break
                         elif choice == 2:
                             policy_net, rewards_dqn, epsilon_history_dqn, losses = train_dqn(device, env)
-                            evaluate_agent(device, env, policy_net=policy_net, tabular=False)
                             plot(rewards_dqn=rewards_dqn, epsilon_history_dqn=epsilon_history_dqn, losses=losses)
+                            evaluate_agent(device, env, policy_net=policy_net, tabular=False)
                             break
                         elif choice == 0:
                             break

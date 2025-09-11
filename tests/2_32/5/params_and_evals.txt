@@ -1,7 +1,7 @@
 ⚙️ CURRENT PARAMETERS:
 [1] Debug mode = False
-[2] Random start = True
-[3] Slippery = True
+[2] Random start = True		<---
+[3] Slippery = False		<---
 --- TABULAR Q-LEARNING ---
 [4] Alpha = 0.1
 [5] Gamma = 0.99
@@ -20,7 +20,7 @@
 [17] Buffer size = 1000
 [18] Episodes = 500
 [19] Target update frequency = 10
-[20] Gradient update frequency = 1
+[20] Gradient update frequency = 4	<---
 --- EVALUATION ---
 [21] Episodes = 1000
 
@@ -28,12 +28,12 @@ TABULAR
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 1000/1000 (100.0%)
   Cliff Falls: 0
-  Avg Total Reward: -45.26
-  Avg Steps per Episode: 45.26
+  Avg Total Reward: -7.71
+  Avg Steps per Episode: 7.71
 
 DQN
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 1000/1000 (100.0%)
   Cliff Falls: 0
-  Avg Total Reward: -47.41
-  Avg Steps per Episode: 47.41
+  Avg Total Reward: -7.59
+  Avg Steps per Episode: 7.59
