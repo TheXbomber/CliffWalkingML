@@ -7,7 +7,7 @@
 \usepackage{booktabs}
 \usepackage{pgfplots} % For including plots
 \usepackage{ragged2e}
-\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{float}
 \usepackage{geometry}
 \usepackage{wrapfig} % Required for wrapping text around figures
@@ -53,10 +53,10 @@
 
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
+    commentstyle=\color{Green},
+	keywordstyle=\color{blue},
+	numberstyle=\tiny\color{Black},
+	stringstyle=\color{YellowOrange},
     basicstyle=\ttfamily\footnotesize,
     breakatwhitespace=false,         
     breaklines=true,                 
@@ -67,7 +67,7 @@
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
-    tabsize=2
+    %tabsize=2
 }
 
 \lstset{style=mystyle}
@@ -190,29 +190,29 @@ The modular design allows easy experimentation with different hyperparameters an
 The algorithm follows the standard Q-Learning approach but is tailored for the Cliff Walking environment.
 \subsubsection{Initialize Q-table}
 The Q-table is initialized with zeros. Its shape corresponds to the number of state and the number of possible actions in the environment:
-\begin{lstlisting}
-    n_states = env.observation_space.n
-    n_actions = env.action_space.n
-    Q = np.zeros((n_states, n_actions))
+\begin{lstlisting}[language=Python]
+n_states = env.observation_space.n
+n_actions = env.action_space.n
+Q = np.zeros((n_states, n_actions))
 \end{lstlisting}
 \subsubsection{Training Loop}
 For each episode, the environment is reset and the agent interacts with it until termination.
 \subsubsection{Action Selection ($\varepsilon$-greedy)}
 The agent chooses an action using the $\varepsilon$-greedy strategy: with probability $\varepsilon$ it selects a random action (exploration), and otherwise it selects the action with the highest Q-value (exploitation).
-\begin{lstlisting}
-    if np.random.rand() < epsilon:
-        action = env.action_space.sample()
-    else:
-        action = np.argmax(Q[state])
+\begin{lstlisting}[language=Python]
+if np.random.rand() < epsilon:
+    action = env.action_space.sample()
+else:
+    action = np.argmax(Q[state])
 \end{lstlisting}
 \subsubsection{Environment Step and Q-value Update}
-After takin an action, the agent observes the next state and reward. The Q-value is updated using the Temporal Difference (TD) learning rule:
-\begin{lstlisting}
-    old_value = Q[state, action]
-    best_next = np.max(Q[next_state])
-    td_target = reward + gamma * best_next * (not done)
-    td_error = td_target - old_value
-    Q[state, action] += alpha * td_error
+After taking an action, the agent observes the next state and reward. The Q-value is updated using the Temporal Difference (TD) learning rule:
+\begin{lstlisting}[language=Python]
+old_value = Q[state, action]
+best_next = np.max(Q[next_state])
+td_target = reward + gamma * best_next * (not done)
+td_error = td_target - old_value
+Q[state, action] += alpha * td_error
 \end{lstlisting}
 \subsubsection{Track Metrics}
 During the training, the following metrics are stored for later visualization:
@@ -224,30 +224,30 @@ During the training, the following metrics are stored for later visualization:
 \subsubsection{Epsilon Decay}
 At the end of each episode, epsilon is decayed to gradually shift from exploration to exploitation:
 \begin{lstlisting}
-    epsilon = max(min_epsilon, epsilon * epsilon_decay)
+epsilon = max(min_epsilon, epsilon * epsilon_decay)
 \end{lstlisting}
 \subsection{Deep Q-Network (DQN) Implementation}
 Our DQN implementation uses a neural network to approximate Q-values, enabling more complex function approximation capabilities. The network architecture is configurable trough hyperparameters.
 \subsubsection{Network Architecture}
-\begin{lstlisting}
-    class DQN(nn.Module):
-    def __init__(self, state_size, action_size):
-        super().__init__()
-        self.embedding = nn.Embedding(state_size, 16)
-        
-        layers = []
-        input_size = 16
-        for _ in range(DQN_HIDDEN_LAYERS):
-            layers.append(nn.Linear(input_size, DQN_NODES_PER_LAYER))
-            layers.append(nn.ReLU())
-            input_size = DQN_NODES_PER_LAYER
-            
-        layers.append(nn.Linear(input_size, action_size))
-        self.net = nn.Sequential(*layers)
+\begin{lstlisting}[language=Python]
+class DQN(nn.Module):
+def __init__(self, state_size, action_size):
+    super().__init__()
+    self.embedding = nn.Embedding(state_size, 16)
     
-    def forward(self, x):
-        x = self.embedding(x)
-        return self.net(x)
+    layers = []
+    input_size = 16
+    for _ in range(DQN_HIDDEN_LAYERS):
+        layers.append(nn.Linear(input_size, DQN_NODES_PER_LAYER))
+        layers.append(nn.ReLU())
+        input_size = DQN_NODES_PER_LAYER
+        
+    layers.append(nn.Linear(input_size, action_size))
+    self.net = nn.Sequential(*layers)
+
+def forward(self, x):
+    x = self.embedding(x)
+    return self.net(x)
 \end{lstlisting}
 \begin{itemize}
     \item \textbf{State Embedding}: 16-dimensional embedding layer converts discrete states to dense representations
@@ -256,30 +256,30 @@ Our DQN implementation uses a neural network to approximate Q-values, enabling m
     \item \textbf{Output Layer}: linear layer producing Q-values dor all actions
 \end{itemize}
 DQN incorporates Experience Replay Buffer to break temporal correlations and improve sample efficiency:
-\begin{lstlisting}
-    replay_buffer = deque(maxlen=10_000)
+\begin{lstlisting}[language=Python]
+replay_buffer = deque(maxlen=10_000)
 
-    # Store experiences
-    replay_buffer.append((state, action, reward, next_state, done))
+# Store experiences
+replay_buffer.append((state, action, reward, next_state, done))
 
-    # Sample random batch for training
-    if len(replay_buffer) >= batch_size:
-        batch = random.sample(replay_buffer, batch_size)
-        # Process batch for network update
+# Sample random batch for training
+if len(replay_buffer) >= batch_size:
+    batch = random.sample(replay_buffer, batch_size)
+    # Process batch for network update
 \end{lstlisting}
 Benefits of Experience Replay:
 \begin{itemize}
     \item \textbf{Decorrelated Updates}: reduces harmful correlation between consecutive experiences 
     \item \textbf{Sample Efficiency}: reuses experiences multiple times for training
-    \item Stable Learning: smoother gradient updates trough diverse batch sampling
+    \item \textbf{Stable Learning}: smoother gradient updates trough diverse batch sampling
 \end{itemize}
-\begin{lstlisting}
-    policy_net = DQN(n_states, n_actions)  # Updated every step
-    target_net = DQN(n_states, n_actions)  # Updated periodically
-    
-    # Target network update
-    if episode % target_update_freq == 0:
-        target_net.load_state_dict(policy_net.state_dict())
+\begin{lstlisting}[language=Python]
+policy_net = DQN(n_states, n_actions)  # Updated every step
+target_net = DQN(n_states, n_actions)  # Updated periodically
+
+# Target network update
+if episode % target_update_freq == 0:
+    target_net.load_state_dict(policy_net.state_dict())
 \end{lstlisting}
 Target Network Purpose:
 \begin{itemize}
@@ -287,50 +287,134 @@ Target Network Purpose:
     \item \textbf{Reduced Correlation}: separates action selection from target value computation
     \item \textbf{Improved Convergence}: more stable learning dynamics
 \end{itemize}
-Our implementation includes a comprehensive configuration system enabling systematic experimentation:
-\begin{lstlisting}
-    # Configuration parameters
-    DQN_HIDDEN_LAYERS = 2
-    DQN_NODES_PER_LAYER = 128
-    DQN_BATCH_SIZE = 64
-    DQN_GAMMA = 0.99
-    DQN_EPSILON_DECAY = 0.995
-    DQN_TARGET_UPDATE_FREQ = 10
+Our implementation includes a comprehensive configuration system enabling systematic experimentation
+\section{Hyperparameters Description}
+\begin{lstlisting}[language=Python]
+RANDOM_START = True
+SLIPPERY = True
+EVALUATION_EPISODES = 1000
+
+# Tabular Q-learning parameters
+TAB_ALPHA = 0.1
+TAB_GAMMA = 0.99
+TAB_EPSILON = 1
+TAB_MIN_EPSILON = 0.01
+TAB_EPSILON_DECAY = 0.995
+TAB_EPISODES = 500
+
+# DQN parameters
+DQN_BATCH_SIZE = 64
+DQN_GAMMA = 0.99
+DQN_EPSILON = 1
+DQN_MIN_EPSILON = 0.01
+DQN_EPSILON_DECAY = 0.995
+DQN_BUFFER_SIZE = 1000
+DQN_EPISODES = 500
+DQN_TARGET_UPDATE_FREQ = 10
+DQN_GRAD_UPDATE_FREQ = 4
+DQN_HIDDEN_LAYERS = 2
+DQN_NODES_PER_LAYER = 32
 \end{lstlisting}
+\begin{itemize}
+    \item \textbf{RANDOM\_START}: enables random starting positions for each episode instead of always starting from the same state
+    \item \textbf{SLIPPERY}: introduces stochasticity in action execution (actions have probability of not executing as intended)
+    \item \textbf{EVALUATION\_EPISODES}: number of episodes used to evaluate agent performance after training
+    \item \textbf{TAB\_ALPHA} (Learning Rate): controls how much new information overrides old Q-values in updates.
+    \item \textbf{TAB\_GAMMA} (Discount Factor): determines importance of future rewards relative to immediate rewards
+    \item \textbf{TAB\_EPSILON} (Initial Exploration Rate): starting probability of taking random actions for exploration
+    \item \textbf{TAB\_MIN\_EPSILON} (Minimum Exploration Rate): lowest bound for exploration probability
+    \item \textbf{TAB\_EPSILON\_DECAY} (Exploration Decay Rate): rate at which exploration decreases per episode
+    \item \textbf{TAB\_EPISODES} (Training Episodes): total number of training episodes for Tabular Q-Learning
+    \item \textbf{DQN\_BATCH\_SIZE} (Mini-batch Size): number of experiences sampled from replay buffer for each training step
+    \item \textbf{DQN\_GAMMA} (Discount Factor): same as tabular version but affects neural network target computation
+    \item \textbf{DQN\_EPSILON/DQN\_MIN\_EPSILON/DQN\_EPSILON\_DECAY}: same\\ exploration-exploitation mechanism as tabular version
+    \item \textbf{DQN\_BUFFER\_SIZE} (Replay Buffer Size): maximum number of experiences stored in replay buffer
+    \item \textbf{DQN\_EPISODES} (Training Episodes): total training episodes for DQN
+    \item \textbf{DQN\_TARGET\_UPDATE\_FREQ} (Target Network Update Frequency): how often (in episodes) the target network copies weights from policy network
+    \item \textbf{DQN\_GRAD\_UPDATE\_FREQ} (Gradient Update Frequency): how often (in environment steps) to perform network parameter updates
+    \item \textbf{DQN\_HIDDEN\_LAYERS} (Network Depth): number of hidden layers in the neural network
+    \item \textbf{DQN\_NODES\_PER\_LAYER} (Network Width): number of neurons in each hidden layer
+\end{itemize}
 \section{Evaluation Framework}
-Both algorithms share a common evaluation framework ensuring fair comparison:
-\begin{lstlisting}
-    def evaluate_agent(env, policy_net=None, Q=None, tabular=True, episodes=1000):
-    successes, falls, total_rewards = 0, 0, []
-    
-    for _ in range(episodes):
+Both algorithms share a common evaluation framework ensuring a fair comparison:
+\begin{lstlisting}[language=Python]
+MAX_EVAL_STEPS = 500
+MAX_CONSECUTIVE_REPEAT = 10  # episode ends if agent repeats a state this many times in a row
+
+def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True, random_start=False):
+    episodes = config.EVALUATION_EPISODES
+
+    successes, falls, total_rewards, steps_list = 0, 0, [], []
+
+    agent = "DQN" if not tabular else "Tabular Q-learning"
+    if not tabular:
+        policy_net.eval()
+
+    for ep in trange(episodes, desc="Evaluating " + agent):
         state, _ = env.reset()
-        done, ep_reward = False, 0
-        
-        while not done:
+        done, ep_reward, steps = False, 0, 0
+
+        last_state = None
+        repeat_count = 0
+
+        while not done and steps < MAX_EVAL_STEPS:
+            if config.RENDER:
+                print(env.render())
+
+            # Select action
             if tabular:
                 action = np.argmax(Q[state])
             else:
+                state_tensor = torch.tensor([state], device=device)
                 with torch.no_grad():
-                    action = policy_net(state_tensor).argmax().item()
-            
+                    action = policy_net(state_tensor).argmax(dim=1).item()
+
             next_state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
             ep_reward += reward
-            
-            if reward == -100:  # Cliff fall detection
+            steps += 1
+
+            if last_state == next_state:
+                repeat_count += 1
+            else:
+                repeat_count = 0
+            last_state = next_state
+
+            # Trigger early stop if stuck in a repeated state
+            if repeat_count >= MAX_CONSECUTIVE_REPEAT:
+                if config.DEBUG:
+                    print(f"Stuck in state {next_state} for {MAX_CONSECUTIVE_REPEAT} steps. Ending episode early.")
+                break
+
+            state = next_state
+
+            if reward == -100:
                 falls += 1
             if done and next_state == (env.observation_space.n - 1):
                 successes += 1
-                
-    return successes, falls, total_rewards
+
+        total_rewards.append(ep_reward)
+        steps_list.append(steps)
+
+        if steps >= MAX_EVAL_STEPS and config.DEBUG:
+            print("Max steps reached, ending episode.")
+
+    if not tabular:
+        policy_net.train()
+
+    print(f"Evaluation Results (over {episodes} episodes):")
+    print(f"  Success Rate: {successes}/{episodes} ({successes/episodes*100:.1f}%)")
+    print(f"  Cliff Falls: {falls}")
+    print(f"  Avg Total Reward: {np.mean(total_rewards):.2f}")
+    print(f"  Avg Steps per Episode: {np.mean(steps_list):.2f}")
 \end{lstlisting}
 Evaluation Metrics:
 \begin{itemize}
-    \item \textbf{Success Rate}: percentage of episodes reaching the goal
+    \item \textbf{Success Rate}: percentage of terminated episodes
     \item \textbf{Cliff Falls}: number of cliff accidents
     \item \textbf{Average Reward}: mean cumulative reward per episode
     \item \textbf{Average Steps}: mean episodes length, indicating path efficiency
 \end{itemize}
-\section{Results}
+\section{Testing}
+To validate our implementation we performed various tests on different hyperparameters to simulate different situations.
 \end{document}
