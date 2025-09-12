@@ -4,8 +4,8 @@ __pycache__/
 *.pyo
 venv/
 .env
-plot_dqn.png
-plot_tabular.png
+./src/plot_dqn.png
+./src/plot_tabular.png
 config.json
 *.aux
 *.fdb_latexmk

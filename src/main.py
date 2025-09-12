@@ -8,6 +8,12 @@ from utils.plot import plot
 from utils.evaluation import evaluate_agent
 from utils.wrappers import RandomStartWrapper
 
+def rebuild_env():
+    env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
+    if config.RANDOM_START:
+        env = RandomStartWrapper(env)
+    return env
+
 def configure_parameters(env):
     while True:
         print("\n⚙️ CURRENT PARAMETERS:")
@@ -46,7 +52,7 @@ def configure_parameters(env):
             continue
 
         if choice == 0:
-            break
+            return env
 
         if choice not in [100, 200]:
             value = input("Enter new value: ")
@@ -79,13 +85,11 @@ def configure_parameters(env):
             case 2:
                 config.RANDOM_START = value
                 env.close()
-                env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
-                if config.RANDOM_START:
-                    env = RandomStartWrapper(env)
+                env = rebuild_env()
             case 3:
                 config.SLIPPERY = value
                 env.close()
-                env = gym.make("CliffWalking-v1", render_mode="ansi", is_slippery=config.SLIPPERY)
+                env = rebuild_env()
             case 4:
                 config.TAB_ALPHA = value
             case 5:
@@ -127,7 +131,6 @@ def configure_parameters(env):
                 continue
 
         print("✅ Parameter updated!")
-    return env
 
 
 
