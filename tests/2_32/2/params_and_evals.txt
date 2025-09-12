@@ -1,3 +1,5 @@
+2_32/2
+
 ⚙️ CURRENT PARAMETERS:
 [1] Debug mode = False
 [2] Random start = True
@@ -26,20 +28,13 @@
 
 TABULAR
 ✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 1000/1000 (100.0%)
+  Success Rate: 998/1000 (99.8%)
   Cliff Falls: 0
-  Avg Total Reward: -40.70
-  Avg Steps per Episode: 40.70
-
+  Avg Total Reward: -44.61
+  Avg Steps per Episode: 44.61
 DQN
 ✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 1000/1000 (100.0%)
+  Success Rate: 956/1000 (95.6%)
   Cliff Falls: 0
-  Avg Total Reward: -47.41
-  Avg Steps per Episode: 47.41
-
-✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 1000/1000 (100.0%)
-  Cliff Falls: 0
-  Avg Total Reward: -84.08
-  Avg Steps per Episode: 84.08
+  Avg Total Reward: -88.65
+  Avg Steps per Episode: 88.65

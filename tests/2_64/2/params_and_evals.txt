@@ -1,6 +1,8 @@
+2_64/2
+
 ⚙️ CURRENT PARAMETERS:
 [1] Debug mode = False
-[2] Random start = False
+[2] Random start = True
 [3] Slippery = True
 --- TABULAR Q-LEARNING ---
 [4] Alpha = 0.1
@@ -11,29 +13,28 @@
 [9] Episodes = 500
 --- DQN ---
 [10] Number of hidden layers = 2
-[11] Number of nodes per layer = 32
+[11] Number of nodes per layer = 64
 [12] Batch size = 64
 [13] Gamma = 0.99
 [14] Epsilon = 1
-[15] Epsilon decay = 0.995
-[16] Minimum epsilon = 0.01
+[15] Minimum epsilon = 0.01
+[16] Epsilon decay = 0.995
 [17] Buffer size = 1000
 [18] Episodes = 500
 [19] Target update frequency = 10
-[20] Gradient update frequency = 4	<----
+[20] Gradient update frequency = 1
 --- EVALUATION ---
 [21] Episodes = 1000
 
 TABULAR
 ✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 961/1000 (96.1%)
+  Success Rate: 968/1000 (96.8%)
   Cliff Falls: 0
-  Avg Total Reward: -63.95
-  Avg Steps per Episode: 63.95
-
+  Avg Total Reward: -49.11
+  Avg Steps per Episode: 49.11
 DQN
 ✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 976/1000 (97.6%)
+  Success Rate: 913/1000 (91.3%)
   Cliff Falls: 0
-  Avg Total Reward: -121.62
-  Avg Steps per Episode: 121.62
+  Avg Total Reward: -103.29
+  Avg Steps per Episode: 103.29

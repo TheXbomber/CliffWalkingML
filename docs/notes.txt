@@ -3,3 +3,4 @@
 - Loops if too few training episodes
 - Epsilon decay at 0.999 takes significantly longer to train and is more prone to error but has more chance to find optimal policy (more exploring)
 - Slippery adds nondeterminism and significantly decreases rewards
+- DQN is slower and noisier since the environment has a small space state

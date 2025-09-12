@@ -23,13 +23,3 @@
 [20] Gradient update frequency = 1
 --- EVALUATION ---
 [21] Episodes = 1000
-
-TABULAR
-✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 1000/1000 (100.0%)
-  Cliff Falls: 0
-  Avg Total Reward: -77.46
-  Avg Steps per Episode: 77.46
-
-DQN
----
