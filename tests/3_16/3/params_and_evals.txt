@@ -1,4 +1,4 @@
-2_64/3
+3_16/3
 
 ⚙️ CURRENT PARAMETERS:
 [1] Debug mode = False
@@ -12,8 +12,8 @@
 [8] Epsilon decay = 0.995
 [9] Episodes = 500
 --- DQN ---
-[10] Number of hidden layers = 2
-[11] Number of nodes per layer = 64
+[10] Number of hidden layers = 3
+[11] Number of nodes per layer = 16
 [12] Batch size = 64
 [13] Gamma = 0.99
 [14] Epsilon = 1
@@ -31,8 +31,8 @@ TABULAR
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 1000/1000 (100.0%)
   Cliff Falls: 0
-  Avg Total Reward: -7.56
-  Avg Steps per Episode: 7.56
+  Avg Total Reward: -7.60
+  Avg Steps per Episode: 7.60
 
 DQN
 ✅ Evaluation Results (over 1000 episodes):
