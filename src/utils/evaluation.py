@@ -6,24 +6,23 @@ import torch
 import config
 
 MAX_EVAL_STEPS = 500
+MAX_CONSECUTIVE_REPEAT = 10  # episode ends if agent repeats a state this many times in a row
 
-def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_start=False):
-    episodes=config.EVALUATION_EPISODES
-    loop_check_steps=20
+def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True, random_start=False):
+    episodes = config.EVALUATION_EPISODES
 
     successes, falls, total_rewards, steps_list = 0, 0, [], []
 
-    agent = "DQN" if not tabular else "Tabular Q-learning" 
-
+    agent = "DQN" if not tabular else "Tabular Q-learning"
     if not tabular:
         policy_net.eval()
 
-    for _ in trange(episodes, desc="🧪 Evaluating " + agent):
-
+    for ep in trange(episodes, desc="🧪 Evaluating " + agent):
         state, _ = env.reset()
-
         done, ep_reward, steps = False, 0, 0
-        state_history = deque(maxlen=loop_check_steps)
+
+        last_state = None
+        repeat_count = 0
 
         while not done and steps < MAX_EVAL_STEPS:
             if config.RENDER:
@@ -42,17 +41,17 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_s
             ep_reward += reward
             steps += 1
 
-            if config.RENDER:
-                print(f"State: {state}, Action: {action}, Reward: {reward}, Next state: {next_state}\n---\n")
+            if last_state == next_state:
+                repeat_count += 1
+            else:
+                repeat_count = 0
+            last_state = next_state
 
-            # Loop detection
-            state_history.append(next_state)
-            if len(state_history) == loop_check_steps:
-                unique_states = len(set(state_history))
-                if unique_states < loop_check_steps // 3:  # 1/3 of buffer are unique
-                    if config.DEBUG:
-                        print("🛑 Loop detected! Ending episode early.")
-                    break
+            # Trigger early stop if stuck in a repeated state
+            if repeat_count >= MAX_CONSECUTIVE_REPEAT:
+                if config.DEBUG:
+                    print(f"🛑 Stuck in state {next_state} for {MAX_CONSECUTIVE_REPEAT} steps. Ending episode early.")
+                break
 
             state = next_state
 
@@ -61,12 +60,11 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_s
             if done and next_state == (env.observation_space.n - 1):
                 successes += 1
 
-        if steps >= MAX_EVAL_STEPS:
-            if config.DEBUG:
-                print("⏱️ Max steps reached, ending episode.")
-
         total_rewards.append(ep_reward)
         steps_list.append(steps)
+
+        if steps >= MAX_EVAL_STEPS and config.DEBUG:
+            print("⏱️ Max steps reached, ending episode.")
 
     if not tabular:
         policy_net.train()

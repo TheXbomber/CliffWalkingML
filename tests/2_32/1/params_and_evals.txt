@@ -6,7 +6,7 @@
 [4] Alpha = 0.1
 [5] Gamma = 0.99
 [6] Epsilon = 1
-[7] Minimum epsilon = 0.1
+[7] Minimum epsilon = 0.01
 [8] Epsilon decay = 0.995
 [9] Episodes = 500
 --- DQN ---
@@ -16,7 +16,7 @@
 [13] Gamma = 0.99
 [14] Epsilon = 1
 [15] Epsilon decay = 0.995
-[16] Minimum epsilon = 0.1
+[16] Minimum epsilon = 0.01
 [17] Buffer size = 1000
 [18] Episodes = 500
 [19] Target update frequency = 10
@@ -27,10 +27,10 @@
 
 TABULAR
 ✅ Evaluation Results (over 1000 episodes):
-  Success Rate: 1000/1000 (100.0%)
+  Success Rate: 513/1000 (51.3%)
   Cliff Falls: 0
-  Avg Total Reward: -76.92
-  Avg Steps per Episode: 76.92
+  Avg Total Reward: -60.07
+  Avg Steps per Episode: 60.07
 
 DQN
 ✅ Evaluation Results (over 1000 episodes):
