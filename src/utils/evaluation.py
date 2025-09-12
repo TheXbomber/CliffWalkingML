@@ -5,6 +5,8 @@ import random
 import torch
 import config
 
+MAX_EVAL_STEPS = 500
+
 def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_start=False):
     episodes=config.EVALUATION_EPISODES
     loop_check_steps=20
@@ -23,8 +25,8 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_s
         done, ep_reward, steps = False, 0, 0
         state_history = deque(maxlen=loop_check_steps)
 
-        while not done:
-            if config.DEBUG:
+        while not done and steps < MAX_EVAL_STEPS:
+            if config.RENDER:
                 print(env.render())
 
             # Select action
@@ -40,16 +42,17 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_s
             ep_reward += reward
             steps += 1
 
-            if config.DEBUG:
+            if config.RENDER:
                 print(f"State: {state}, Action: {action}, Reward: {reward}, Next state: {next_state}\n---\n")
 
             # Loop detection
             state_history.append(next_state)
             if len(state_history) == loop_check_steps:
-              unique_states = len(set(state_history))
-              if config.DEBUG and (unique_states < loop_check_steps // 3):  # 1/3 of buffer are unique
-                  print("🛑 Loop detected! Ending episode early.")
-                  break
+                unique_states = len(set(state_history))
+                if unique_states < loop_check_steps // 3:  # 1/3 of buffer are unique
+                    if config.DEBUG:
+                        print("🛑 Loop detected! Ending episode early.")
+                    break
 
             state = next_state
 
@@ -57,6 +60,10 @@ def evaluate_agent(device, env, policy_net=None, Q=None, tabular=True,  random_s
                 falls += 1
             if done and next_state == (env.observation_space.n - 1):
                 successes += 1
+
+        if steps >= MAX_EVAL_STEPS:
+            if config.DEBUG:
+                print("⏱️ Max steps reached, ending episode.")
 
         total_rewards.append(ep_reward)
         steps_list.append(steps)

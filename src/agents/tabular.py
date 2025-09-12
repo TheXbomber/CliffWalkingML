@@ -24,7 +24,7 @@ def train_tabular_q(env):
         ep_td_errors = []
 
         while not done:
-            if config.DEBUG:
+            if config.RENDER:
                 print(env.render())
 
             if np.random.rand() < epsilon:
@@ -46,7 +46,8 @@ def train_tabular_q(env):
 
             state = next_state
 
-            #print(f"State: {state}, Action: {action}, Reward: {reward}, Next state: {next_state}\n---\n")
+            if config.RENDER:
+                print(f"State: {state}, Action: {action}, Reward: {reward}, Next state: {next_state}\n---\n")
 
         rewards.append(ep_reward)
         epsilon_history.append(epsilon)

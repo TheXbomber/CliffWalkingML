@@ -1,6 +1,7 @@
 import json
 import os
 
+RENDER = False
 DEBUG = False
 RANDOM_START = True
 SLIPPERY = True
