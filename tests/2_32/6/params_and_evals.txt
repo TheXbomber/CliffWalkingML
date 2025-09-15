@@ -38,5 +38,5 @@ DQN
 ✅ Evaluation Results (over 1000 episodes):
   Success Rate: 0/1000 (0.0%)
   Cliff Falls: 0
-  Avg Total Reward: -373.61
-  Avg Steps per Episode: 373.61
+  Avg Total Reward: -358.43
+  Avg Steps per Episode: 358.43
