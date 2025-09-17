@@ -84,6 +84,8 @@
 
 \tableofcontents
 
+\newpage
+
 \section{Introduction}
 In this Machine Learning project we will focus on the subject of Reinforcement Learning applied to the "Cliff Walking" environment. The goal of the agent is to reach a specified location, by moving in the four directions without falling down the cliff. This problem represents a fundamental challenge in Reinforcement Learning, combining elements of exploration/exploitation tradeoff, temporal credit assignment and policy optimization. This environment provides an excellent testbed for comparing different Reinforcement Learning approaches, in particular tabular Q-learning and Deep Q-Networks (DQN).
 \vspace{0,5cm}\\
@@ -110,7 +112,7 @@ The Reinforcement Learning process follows a continuous loop:
     \item Update the policy based on the experience
     \item Repeat until learning converges or a stopping criterion is met
 \end{enumerate}
-One of the fundamental challenges in Reinforcement Learning is balancing \textbf{exploration} (trying new actions to discover potentially better strategies) with \textbf{exploitation} (using knows good actions to maximize rewards). This balancing is crucial because too much exploration can lead to the agent wasting time on suboptimal actions, on the other hand with too little exploration the agent may get stuck in a local optimum and never discover the best strategy.
+One of the fundamental challenges in Reinforcement Learning is balancing \textbf{exploration} (trying new actions to discover potentially better strategies) with \textbf{exploitation} (using known good actions to maximize rewards). This balancing is crucial because too much exploration can lead to the agent wasting time on suboptimal actions, on the other hand with too little exploration the agent may get stuck in a local optimum and never discover the best strategy.
 \subsection{Q-Learning}
 Q-Learning is a model-free Reinforcement Learning algorithm that learns the quality of actions, telling the agent what actions to take under what circumstances. The "Q" stands for quality, representing the expected future reward for taking a specific action in a specific state.\\ The \textbf{Q-function} Q(s,a) represents the expected cumulative reward when taking action 'a' in state 's' and then following the optimal policy. The learning process involves iteratively updating these Q-values using the Bellman equation:
 \begin{figure}[H]
@@ -131,7 +133,7 @@ Where:
 To balance exploration and exploitation, we implement an epsilon-greedy policy:
 \begin{itemize}
     \item With probability \textbf{$\varepsilon$ (epsilon)}: choose a random action (exploration)
-    \item With probability \textbf{(1-$\varepsilon$)}: choose the action with the highest Q-value (exploitation)
+    \item With probability \textbf{1-$\varepsilon$}: choose the action with the highest Q-value (exploitation)
 \end{itemize}
 The epsilon value starts high (encouraging exploration) and gradually decreases (shifting toward exploitation) as learning progresses.
 \section{Environment}
@@ -683,7 +685,7 @@ The slippery option adds nondeterminism but significantly decreases rewards sinc
 \subsection{Epsilon Decay}
 The epsilon value is used in training to balance exploration and exploitation. We always start with $\varepsilon=1$, prioritizing exploration, and decay it over time at a fixed rate to favor exploitation more.\\
 
-\noindent We started with an epsilon decay of 0.995 we can notice that increasing the to 0.999 substantially increases training time and error. Despite that, the agent has a higher chance to find the optimal police due to the fact that exploring is more favored, however, it may waste time exploring wrong paths instead of using the ones it has already found. In our testing, DQN was not able to perform properly with this value.
+\noindent We start with an epsilon decay of 0.995 and can that setting it to 0.999 substantially increases training time and error. Despite that, the agent has a higher chance to find the optimal police due to the fact that exploring is more favored; however, it may waste time exploring wrong paths instead of using the ones it has already found. In our testing, DQN was not able to perform properly with this value.
 
 \begin{figure}[H]
     \centering
@@ -736,7 +738,7 @@ The epsilon value is used in training to balance exploration and exploitation. W
     \item Avg Steps per Episode: 358.43
 \end{itemize}
 
-\noindent When instead we reduce the epsilon decay,, we favor exploitation more, exploring less paths. This can lead to the agent missing potential new paths that are better in favor of using the ones it has already explored. In our testing this can be seen in a lower average reward when we reduce the epsilon decay from 0.995 to 0.99.
+\noindent When instead we reduce the epsilon decay, we favor exploitation more, exploring less paths. This can lead to the agent missing potential new paths that are better in favor of using the ones it has already explored. In our testing this can be seen in a lower average reward when we reduce the epsilon decay from 0.995 to 0.99.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{1_32_0995_64_slip_tab.png}
@@ -871,11 +873,11 @@ The number of episodes used for training should be large enough for the agent to
     \item Avg Steps per Episode: 105.36
 \end{itemize}
 
-\noindent Obviously DQN is much more powerful and thus should perform better in more complex environments despite the need to be trained for more episodes.
+\noindent Obviously, since DQN is much more powerful, it should perform better in more complex environments despite the need to be trained for more episodes.
 
 \subsection{Hidden Layers and Neurons}
 The neural network used for DQN can be configured in terms of the number of hidden layers and neurons per layer.
-We started with a base consisting of 2 hidden layers of 32 neurons and tweaked both numbers to observe the difference in the results:\\
+We started with a base consisting of 2 hidden layers of 32 neurons and tweaked both numbers to observe the difference in the results.\\
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{1_16.png}
@@ -973,11 +975,11 @@ We started with a base consisting of 2 hidden layers of 32 neurons and tweaked b
     \item Avg Steps per Episode: 13.00
 \end{itemize}
 \vspace{0,5cm}
-As we can see from the graphs, is more convenient to increase depth instead of width to improve the performance of the DQN. We can't reach the performance of the "2 hidden layers and 32 neurons" DQN with just 1 hidden layer, even by increasing the number of neurons to 128, but we can easily match it with 3 hidden layers and just 16 neurons. This confirms that, in practice, a deep and narrow network is easier to train and provides
+As we can see from the graphs, it is more convenient to increase depth instead of width to improve the performance of the DQN. We can't reach the performance of the "2 hidden layers and 32 neurons" DQN with just 1 hidden layer, even by increasing the number of neurons to 128, but we can easily match it with 3 hidden layers and just 16 neurons. This confirms that, in practice, a deep and narrow network is easier to train and provides
 better results in generalization.
 
 \section{Conclusions}
-In this project we have implemented tabular Q-learning and DQN to perform Reinforcement Learning in the Cliff Walking environment. We have tested the two approaches and put them side by side, comparing their performance in this environment. We have reached the conclusion that, in the Cliff Walking environment, DQN is often slower and noisier compared to tabular Q-learning. This is because the environment has a small space state and the agent doesn't need the power of a neural network since the Q table can be easily computed. In bigger and more complex environment, however, it is expected that DQN would perform much better than tabular Q-learning since, with a much higher number of states, the Q table would become much larger and slow down performance.\\
+In this project we have implemented tabular Q-learning and DQN to perform Reinforcement Learning in the Cliff Walking environment. We have tested the two approaches and put them side by side, comparing their performance in this environment. We have reached the conclusion that, in the Cliff Walking environment, DQN is often slower and noisier compared to tabular Q-learning. This is because the environment has a small space state and the agent doesn't need the power of a neural network since the Q table can be easily computed. In bigger and more complex environments, however, it is expected that DQN would perform much better than tabular Q-learning since, with a much higher number of states, the Q table would become much larger and slow down performance.\\
 
 \noindent So, in conclusion, both approaches have their strengths and weaknesses, with tabular Q-learning being preferred for simpler and smaller environments and DQN favoring larger and more complex ones. The key insight is that algorithm selection must carefully consider problem characteristics, computational constraints and performance requirements rather than defaulting to the most sophisticated available method.
 \end{document}
